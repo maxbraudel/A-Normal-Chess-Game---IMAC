@@ -1,0 +1,54 @@
+#pragma once
+#include <TGUI/Backend/SFML-Graphics.hpp>
+#include <TGUI/AllWidgets.hpp>
+#include <array>
+#include <functional>
+#include <string>
+#include <vector>
+
+#include "UI/InGameViewModel.hpp"
+
+class AssetManager;
+
+enum class MultiplayerStatusTone {
+    Neutral,
+    Waiting,
+    Connected,
+    Error
+};
+
+class HUD {
+public:
+    void init(tgui::Gui& gui, const AssetManager& assets);
+    void show();
+    void hide();
+    bool isVisible() const;
+    void update(const InGameViewModel& model);
+    void setMultiplayerStatus(const std::string& text, MultiplayerStatusTone tone);
+    void clearMultiplayerStatus();
+
+    void setOnMenu(std::function<void()> callback);
+    void setOnResetTurn(std::function<void()> callback);
+    void setOnEndTurn(std::function<void()> callback);
+
+private:
+    bool m_visible = false;
+    bool m_showTurnPointIndicators = true;
+    tgui::Panel::Ptr m_metricsPanel;
+    tgui::Panel::Ptr m_pointPanel;
+    tgui::Panel::Ptr m_statusPanel;
+    tgui::Panel::Ptr m_alertPanel;
+    tgui::Panel::Ptr m_actionPanel;
+    tgui::Panel::Ptr m_networkPanel;
+    std::array<tgui::Label::Ptr, 4> m_metricLabels{};
+    std::array<tgui::Label::Ptr, 2> m_pointLabels{};
+    tgui::Label::Ptr m_statusLabel;
+    std::vector<tgui::Label::Ptr> m_alertLabels;
+    tgui::Label::Ptr m_networkStatusLabel;
+    tgui::Button::Ptr m_menuButton;
+    tgui::Button::Ptr m_endTurnButton;
+    tgui::Button::Ptr m_resetTurnButton;
+    std::function<void()> m_onMenu;
+    std::function<void()> m_onResetTurn;
+    std::function<void()> m_onEndTurn;
+};
